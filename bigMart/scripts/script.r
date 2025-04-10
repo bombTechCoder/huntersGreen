@@ -1,7 +1,12 @@
 # import data 
 library(readxl)
 library(dplyr)
-library(lmer)
+library(MASS)
+library(jtools)
+library(ggplot2)
+library(stargazer)
+library(lme4)
+
 d <- read_excel("C:\\Users\\cbloom\\Documents\\dev\\huntersGreen\\huntersGreen\\bigMart\\data\\BigMartSales-2.xlsx")
 
 # View(d)
@@ -33,5 +38,6 @@ otm2_glm <- glm(log(item_sales) ~ outlet_type, data=d)
 summary(otm2_glm)
 plot(otm2_glm)
 
-otm3_plm <- lmer(log(item_sales) ~ outlet_type, data=d, model="random")
+# can't get lmer to work
+otm3_plm <- lmer(log(item_sales) ~ outlet_type, data=d, model="within")
 summary(otm3_plm)
