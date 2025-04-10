@@ -1,7 +1,7 @@
 # import data 
 library(readxl)
 library(dplyr)
-library(plm)
+library(lmer)
 d <- read_excel("C:\\Users\\cbloom\\Documents\\dev\\huntersGreen\\huntersGreen\\bigMart\\data\\BigMartSales-2.xlsx")
 
 # View(d)
@@ -33,5 +33,5 @@ otm2_glm <- glm(log(item_sales) ~ outlet_type, data=d)
 summary(otm2_glm)
 plot(otm2_glm)
 
-otm3_plm <- plm(log(item_sales) ~ outlet_type, data=d, model="random")
+otm3_plm <- lmer(log(item_sales) ~ outlet_type, data=d, model="random")
 summary(otm3_plm)
