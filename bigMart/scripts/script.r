@@ -7,28 +7,35 @@ library(ggplot2)
 library(stargazer)
 library(lme4)
 
+# read file
 d <- read_excel("C:\\Users\\cbloom\\Documents\\dev\\huntersGreen\\huntersGreen\\bigMart\\data\\BigMartSales-2.xlsx")
 
-# View(d)
 str(d)
 
-# d$item_fat_content <- factor(d$item_fat_content)
+# clean data
 d$item_type <- factor(d$item_fat_content)
 d$outlet_size <- factor(d$outlet_size)
 d$city_type <- factor(d$city_type)
 d$outlet_type <- factor(d$outlet_type)
 d$outlet_age <- 2025 - d$outlet_year
-
 d$item_fat_content <- recode_factor(d$item_fat_content, "low fat"="Low Fat")
 
+# review data
+summary(d)
 View(d)
 str(d)
+hist(d$item_sales)
 hist(log(d$item_sales))
 
-summary(d)
+boxplot(item_sales ~ interaction(outlet_type, city_type), data = d,
+        main = "Boxplot of Sales by Outlet Type and City Type",
+        xlab = "Outlet Type and City Type",
+        ylab = "Item Sales",
+        las = 2)
 
 cor(d$item_sales, d$item_visibility)
 cor(d$item_sales, d$item_mrp)
+
 
 # If the questions are completely separate from each other, then the model ought
 # to have only one independant variable.  Let's run through that quick
@@ -97,16 +104,16 @@ stargazer(oim1_ols, oim2_glm, oim3_plm, type="text", single.row = TRUE)
 
 # Let's put it together
 
-cm1_ols <- lm(log(item_sales) ~ outlet_ID + city_type + outlet_type, data=d)
+cm1 <- lmer(log(item_sales) ~ city_type + outlet_type + item_mrp + item_visibility + (1 | outlet_ID), data=d)
 summary(cm1_ols)
-plot(cim1_ols)
+plot(cm1_ols)
 
-cm2_glm <- glm(log(item_sales) ~ outlet_ID + city_type + outlet_type, data=d)
+cm2 <- lmer(log(item_sales) ~ city_type + outlet_type + item_mrp + outlet_age + (1 | outlet_ID), data=d)
 summary(cm2_glm)
 plot(cm2_glm)
 
-cm3_plm <- lmer(log(item_sales) ~ outlet_ID + city_type + outlet_type + (1 | item_ID), data=d)
-summary(cim3_plm)
+cm3 <- lmer(log(item_sales) ~  city_type + outlet_type + outlet_age + item_visibility + (1 | outlet_ID), data=d)
+summary(cm3_plm)
 plot(cm3_plm)
 
 stargazer(cm1_ols, cm2_glm, cm3_plm, type="text", single.row = TRUE)
