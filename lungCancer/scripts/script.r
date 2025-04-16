@@ -8,8 +8,8 @@ colnames(d) <- c("treatment", "cellType", "survival", "status",
 
 View(d)
 attach(d)
-hist(Survival)
-hist(log(Survival))
+hist(survival)
+hist(log(survival))
 
 
 # factor treatment variable
@@ -27,6 +27,7 @@ ggsurvplot(km_fit, data = d,
            xlab = "Time (days)",
            ylab = "Survival probability", 
            title = "Kaplan-Meier Survival Curves: Standard vs. Test Treatment")
+
 
 survival_summary <- summary(km_fit, times = c(183, 365))
 print(survival_summary)
@@ -46,3 +47,24 @@ print(summary_test)
 print(summary_test$table)
 mean_survival_test <- summary_test$table["rmean"]
 print(mean_survival_test)
+
+cox_model <- coxph(surv_obj ~ Age + MonthsFromDiag + Treatment, data = data)
+summary(cox_model)
+
+hr <- exp(coef(cox_model))
+print("Hazard Ratios (Cox Model):")
+print(hr)
+
+weibull_model <- survreg(surv_obj ~ Age + MonthsFromDiag + Treatment, data = data, dist = "weibull")
+summary(weibull_model)
+
+time_ratio_weibull <- exp(-coef(weibull_model))
+print("Time Ratios (Weibull Model):")
+print(time_ratio_weibull)
+
+lognormal_model <- survreg(surv_obj ~ Age + MonthsFromDiag + Treatment, data = data, dist = "lognormal")
+summary(lognormal_model)
+
+time_ratio_lognormal <- exp(-coef(lognormal_model))
+print("Time Ratios (Log-Normal Model):")
+print(time_ratio_lognormal)
