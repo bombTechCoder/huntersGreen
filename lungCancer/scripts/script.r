@@ -40,39 +40,39 @@ print(survival_summary)
 
 #### This block I couldn't get to distinguish between treatments
 # standard treatment group
-km_standard <- survfit(surv_obj ~ 1, data = subset(d, treatment == "standard"))
-print(km_standard)
-plot(km_standard)
-summary_standard <- summary(km_standard)
+# km_standard <- survfit(surv_obj ~ 1, data = subset(d, treatment == "standard"))
+# print(km_standard)
+# plot(km_standard)
+# summary_standard <- summary(km_standard)
 # print(summary_standard)
-print(summary_standard$table)
-mean_survival_standard <- summary_standard$table["rmean"]
-print(mean_survival_standard)
+# print(summary_standard$table)
+# mean_survival_standard <- summary_standard$table["rmean"]
+# print(mean_survival_standard)
 
 # test treatment group:
-km_test <- survfit(surv_obj ~ 1, data = subset(d, treatment == "test"))
-print(km_test)
-plot(km_test)
-summary_test <- summary(km_test)
+# km_test <- survfit(surv_obj ~ 1, data = subset(d, treatment == "test"))
+# print(km_test)
+# plot(km_test)
+# summary_test <- summary(km_test)
 # print(summary_test)
-print(summary_test$table)
-mean_survival_test <- summary_test$table["rmean"]
-print(mean_survival_test)
+# print(summary_test$table)
+# mean_survival_test <- summary_test$table["rmean"]
+# print(mean_survival_test)
 
 
 #### So I tried this approach
 library(survRM2)
 
 # needs a boolean input again now
-arm <- ifelse(d$treatment == "test", 1, 0)
+arm <- ifelse(treatment == "test", 1, 0)
 
 # maximum amount of time I care about
-tau <- max(d$survival)
+tau <- max(survival)
 
 # run rmst2 on the full dataset
 rmst_cmp <- rmst2(
-  time   = d$survival,
-  status = d$status,
+  time   = survival,
+  status = status,
   arm    = arm,
   tau    = tau
 )
